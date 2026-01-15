@@ -5,6 +5,7 @@ const Logo = ({ className = "" }: { className?: string }) => (
     viewBox="0 0 110 30"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    aria-label="PepTickr logo"
     className={className}
   >
     <path

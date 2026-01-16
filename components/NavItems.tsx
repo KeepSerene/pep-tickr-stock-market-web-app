@@ -8,8 +8,7 @@ import { usePathname } from "next/navigation";
 function NavItems() {
   const pathname = usePathname();
 
-  const checkIsActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const checkIsActive = (href: string) => href === pathname;
 
   return (
     <ul className="max-sm:text-sm font-medium p-2 flex flex-col sm:flex-row gap-3 sm:gap-10">

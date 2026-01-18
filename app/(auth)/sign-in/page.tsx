@@ -84,7 +84,7 @@ function SignIn() {
           disabled={isSubmitting}
           className="yellow-btn w-full mt-5"
         >
-          {isSubmitting ? "Signin in..." : "Sign In"}
+          {isSubmitting ? "Signing in..." : "Sign In"}
         </Button>
 
         <FooterLink

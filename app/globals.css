@@ -232,7 +232,7 @@
     @apply text-white cursor-pointer px-3 py-2 rounded-sm bg-gray-800 hover:bg-gray-600!;
   }
   .footer-link {
-    @apply text-gray-400 font-medium hover:text-yellow-400 hover:underline transition-colors;
+    @apply text-gray-400 font-medium transition-colors hover:text-yellow-400 hover:underline focus:text-yellow-400 focus:underline;
   }
   .search-text {
     @apply cursor-pointer hover:text-yellow-500;

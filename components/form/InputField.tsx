@@ -6,7 +6,6 @@ function InputField({
   type = "text",
   name,
   label,
-  value,
   disabled,
   placeholder,
   register,
@@ -22,7 +21,6 @@ function InputField({
       <Input
         type={type}
         id={name}
-        value={value}
         disabled={disabled}
         placeholder={placeholder}
         className={cn("form-input", {

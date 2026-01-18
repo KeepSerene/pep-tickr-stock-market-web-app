@@ -187,16 +187,16 @@
     @apply flex justify-between items-center px-6 py-4 text-gray-500;
   }
   .auth-layout {
-    @apply flex flex-col justify-between lg:flex-row h-screen bg-gray-900 relative overflow-hidden;
+    @apply flex flex-col justify-between lg:flex-row h-dvh bg-gray-900 relative overflow-hidden;
   }
   .auth-logo {
     @apply pt-6 lg:pt-8 mb-8 lg:mb-12;
   }
   .auth-left-section {
-    @apply w-full lg:w-[45%] lg:h-screen px-6 lg:px-16 flex flex-col overflow-y-auto;
+    @apply w-full lg:w-[45%] lg:h-dvh px-6 lg:px-16 flex flex-col overflow-y-auto;
   }
   .auth-right-section {
-    @apply w-full max-lg:border-t max-lg:border-gray-600 lg:w-[55%] lg:h-screen bg-gray-800 px-6 py-4 md:p-6 lg:py-12 lg:px-18 flex flex-col justify-start;
+    @apply w-full max-lg:border-t max-lg:border-gray-600 lg:w-[55%] lg:h-dvh bg-gray-800 px-6 py-4 md:p-6 lg:py-12 lg:px-18 flex flex-col justify-start;
   }
   .auth-blockquote {
     @apply text-sm md:text-xl lg:text-2xl font-medium text-gray-400 mb-1 md:mb-6 lg:mb-8;
@@ -232,7 +232,7 @@
     @apply text-white cursor-pointer px-3 py-2 rounded-sm bg-gray-800 hover:bg-gray-600!;
   }
   .footer-link {
-    @apply text-gray-400 font-medium hover:text-yellow-400 hover:underline transition-colors;
+    @apply text-gray-400 font-medium transition-colors hover:text-yellow-400 hover:underline focus:text-yellow-400 focus:underline;
   }
   .search-text {
     @apply cursor-pointer hover:text-yellow-500;

@@ -35,7 +35,7 @@ function UserMenuDropdown() {
             <AvatarImage src="https://github.com/shadcn.png" />
 
             <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold">
-              {user.name.at(0) || "U"}
+              {user.name.at(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
 
@@ -56,7 +56,7 @@ function UserMenuDropdown() {
             <AvatarImage src="https://github.com/shadcn.png" />
 
             <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold">
-              {user.name.at(0) || "U"}
+              {user.name.at(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
 

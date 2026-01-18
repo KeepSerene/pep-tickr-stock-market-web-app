@@ -10,7 +10,7 @@ function SignIn() {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useForm<SignUpFormData>({
+  } = useForm<SignInFormData>({
     defaultValues: {
       email: "",
       password: "",

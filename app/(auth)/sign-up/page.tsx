@@ -3,6 +3,7 @@
 import CountryPicker from "@/components/form/CountryPicker";
 import FooterLink from "@/components/form/FooterLink";
 import InputField from "@/components/form/InputField";
+import PasswordInput from "@/components/form/PasswordInput";
 import SelectField from "@/components/form/SelectField";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,9 +25,9 @@ function SignUp() {
       email: "",
       password: "",
       country: "IN",
-      investmentGoals: "",
-      riskTolerance: "",
-      preferredIndustry: "",
+      investmentGoals: "Growth",
+      riskTolerance: "Medium",
+      preferredIndustry: "Technology",
     },
     mode: "onBlur",
   });
@@ -100,8 +101,7 @@ function SignUp() {
         />
 
         {/* Password */}
-        <InputField
-          type="password"
+        <PasswordInput
           name="password"
           label="Password"
           placeholder="Enter a strong password"

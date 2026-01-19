@@ -56,6 +56,8 @@ export default async function connectToDatabase() {
     mongoose.connection.on("error", (err) => {
       console.error("Mongoose connection error:", err);
     });
+
+    return cached.mongooseInstance;
   } catch (error) {
     // If connection fails, clear the promise so next call can retry
     cached.mongoosePromise = null;

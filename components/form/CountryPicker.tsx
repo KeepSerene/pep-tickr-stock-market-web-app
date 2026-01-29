@@ -73,9 +73,8 @@ function CountrySelect({
         >
           {value ? (
             <span className="flex items-center gap-2">
-              <span className="text-xl leading-none">
-                {getFlagEmoji(value)}
-              </span>
+              <span className="leading-none">{getFlagEmoji(value)}</span>
+
               <span>{countries.find((c) => c.value === value)?.label}</span>
             </span>
           ) : (
@@ -86,8 +85,8 @@ function CountrySelect({
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-full p-0 bg-gray-800 border-gray-600"
         align="start"
+        className="w-full p-0 bg-gray-800 border-gray-600"
       >
         <Command className="bg-gray-800 border-gray-600">
           <CommandInput
@@ -118,9 +117,10 @@ function CountrySelect({
                     )}
                   />
                   <span className="flex items-center gap-2">
-                    <span className="text-xl leading-none">
+                    <span className="leading-none">
                       {getFlagEmoji(country.value)}
                     </span>
+
                     <span>{country.label}</span>
                   </span>
                 </CommandItem>

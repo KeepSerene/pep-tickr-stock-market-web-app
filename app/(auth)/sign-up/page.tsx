@@ -6,14 +6,19 @@ import InputField from "@/components/form/InputField";
 import PasswordInput from "@/components/form/PasswordInput";
 import SelectField from "@/components/form/SelectField";
 import { Button } from "@/components/ui/button";
+import { signUpAction } from "@/lib/actions/auth.actions";
 import {
   INVESTMENT_GOALS,
   PREFERRED_INDUSTRIES,
   RISK_TOLERANCE_OPTIONS,
 } from "@/lib/constants";
+import { ChartNoAxesCombinedIcon, Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 function SignUp() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -34,9 +39,18 @@ function SignUp() {
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      console.log(data);
+      const result = await signUpAction(data);
+
+      if (result.success) router.push("/");
     } catch (error) {
       console.error("Error submitting sign up form:", error);
+
+      toast.error("Sign up failed!", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to create an account.",
+      });
     }
   };
 
@@ -126,6 +140,7 @@ function SignUp() {
           error={errors.password}
         />
 
+        {/* Investment goals */}
         <SelectField
           name="investmentGoals"
           label="Investment Goals"
@@ -136,6 +151,7 @@ function SignUp() {
           error={errors.investmentGoals}
         />
 
+        {/* Risk tolerance */}
         <SelectField
           name="riskTolerance"
           label="Risk Tolerance"
@@ -146,6 +162,7 @@ function SignUp() {
           error={errors.riskTolerance}
         />
 
+        {/* Preferred industry */}
         <SelectField
           name="preferredIndustry"
           label="Preferred Industry"
@@ -161,9 +178,17 @@ function SignUp() {
           disabled={isSubmitting}
           className="yellow-btn w-full mt-5"
         >
-          {isSubmitting
-            ? "Creating Your Account..."
-            : "Start Your Investment Journey"}
+          {isSubmitting ? (
+            <>
+              <Loader2Icon className="size-4 animate-spin" />
+              <span>Creating Your Account...</span>
+            </>
+          ) : (
+            <>
+              <ChartNoAxesCombinedIcon className="size-4" />
+              <span>Start Your Investment Journey</span>
+            </>
+          )}
         </Button>
 
         <FooterLink

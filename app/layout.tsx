@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Spline_Sans, Spline_Sans_Mono } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 
 const splineSans = Spline_Sans({
   variable: "--font-spline-sans",
@@ -35,10 +36,12 @@ export default function GlobalLayout({
         className={cn(
           splineSans.variable,
           splineMono.variable,
-          "font-sans antialiased"
+          "font-sans antialiased",
         )}
       >
         <main>{children}</main>
+
+        <Toaster richColors />
       </body>
     </html>
   );

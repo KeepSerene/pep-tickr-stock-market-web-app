@@ -13,15 +13,25 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOutIcon } from "lucide-react";
 import NavItems from "./NavItems";
+import { signOutAction } from "@/lib/actions/auth.actions";
+import { toast } from "sonner";
 
-function UserMenuDropdown() {
+function UserMenuDropdown({ user }: { user: User }) {
   const router = useRouter();
 
   const handleSignOut = async () => {
+    const result = await signOutAction();
+
+    if (result?.success === false) {
+      toast.error("Something went wrong!", {
+        description: result.error ?? "Failed to sign out.",
+      });
+
+      return;
+    }
+
     router.push("/sign-in");
   };
-
-  const user = { name: "John Doe", email: "example@email.com" };
 
   return (
     <DropdownMenu>

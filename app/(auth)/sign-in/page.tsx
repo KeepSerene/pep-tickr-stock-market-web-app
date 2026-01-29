@@ -2,10 +2,16 @@
 
 import FooterLink from "@/components/form/FooterLink";
 import InputField from "@/components/form/InputField";
+import PasswordInput from "@/components/form/PasswordInput";
 import { Button } from "@/components/ui/button";
+import { signInAction } from "@/lib/actions/auth.actions";
+import { Loader2Icon, LogInIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 function SignIn() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -20,9 +26,26 @@ function SignIn() {
 
   const onSubmit = async (data: SignInFormData) => {
     try {
-      console.log(data);
+      const result = await signInAction(data);
+
+      if (result.success) {
+        router.push("/");
+
+        return;
+      }
+
+      toast.error("Sign in failed!", {
+        description: result.error ?? "An error occurred while signing in.",
+      });
     } catch (error) {
       console.error("Error submitting sign in form:", error);
+
+      toast.error("Sign in failed!", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "An error occurred while signing in.",
+      });
     }
   };
 
@@ -53,8 +76,7 @@ function SignIn() {
         />
 
         {/* Password */}
-        <InputField
-          type="password"
+        <PasswordInput
           name="password"
           label="Password"
           placeholder="Enter a strong password"
@@ -84,7 +106,17 @@ function SignIn() {
           disabled={isSubmitting}
           className="yellow-btn w-full mt-5"
         >
-          {isSubmitting ? "Signing in..." : "Sign In"}
+          {isSubmitting ? (
+            <>
+              <Loader2Icon className="size-4 animate-spin" />
+              <span>Signing In...</span>
+            </>
+          ) : (
+            <>
+              <LogInIcon className="size-4" />
+              <span>Sign In</span>
+            </>
+          )}
         </Button>
 
         <FooterLink

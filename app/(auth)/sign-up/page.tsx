@@ -41,7 +41,15 @@ function SignUp() {
     try {
       const result = await signUpAction(data);
 
-      if (result.success) router.push("/");
+      if (result.success) {
+        router.push("/");
+
+        return;
+      }
+
+      toast.error("Sign up failed!", {
+        description: result.error ?? "Failed to create an account.",
+      });
     } catch (error) {
       console.error("Error submitting sign up form:", error);
 

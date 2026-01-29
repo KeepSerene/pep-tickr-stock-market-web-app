@@ -18,9 +18,11 @@ export async function signUpAction({
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
 
   if (!passwordPattern.test(password)) {
-    throw new Error(
-      "Password must contain uppercase, lowercase, number, and special character",
-    );
+    return {
+      success: false,
+      error:
+        "Password must contain uppercase, lowercase, number, and special character",
+    };
   }
 
   try {
@@ -29,17 +31,21 @@ export async function signUpAction({
     });
 
     if (response) {
-      await inngest.send({
-        name: "app/user.created",
-        data: {
-          email,
-          name: fullName,
-          country,
-          investmentGoals,
-          riskTolerance,
-          preferredIndustry,
-        },
-      });
+      try {
+        await inngest.send({
+          name: "app/user.created",
+          data: {
+            email,
+            name: fullName,
+            country,
+            investmentGoals,
+            riskTolerance,
+            preferredIndustry,
+          },
+        });
+      } catch (eventError) {
+        console.error("Inngest send failed:", eventError);
+      }
     }
 
     return { success: true, data: response };
@@ -66,9 +72,11 @@ export async function signInAction({ email, password }: SignInFormData) {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
 
   if (!passwordPattern.test(password)) {
-    throw new Error(
-      "Password must contain uppercase, lowercase, number, and special character",
-    );
+    return {
+      success: false,
+      error:
+        "Password must contain uppercase, lowercase, number, and special character",
+    };
   }
 
   try {

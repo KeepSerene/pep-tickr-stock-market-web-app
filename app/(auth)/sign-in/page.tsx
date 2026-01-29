@@ -28,7 +28,15 @@ function SignIn() {
     try {
       const result = await signInAction(data);
 
-      if (result.success) router.push("/");
+      if (result.success) {
+        router.push("/");
+
+        return;
+      }
+
+      toast.error("Sign in failed!", {
+        description: result.error ?? "An error occurred while signing in.",
+      });
     } catch (error) {
       console.error("Error submitting sign in form:", error);
 

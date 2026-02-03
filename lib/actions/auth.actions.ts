@@ -99,11 +99,10 @@ export async function signOutAction() {
  */
 export async function signInAction({ email, password }: SignInFormData) {
   // Server-side validation
-  if (!PASSWORD_PATTERN.test(password)) {
+  if (!password) {
     return {
       success: false,
-      error:
-        "Password must contain uppercase, lowercase, number, and special character",
+      error: "Password is required",
     };
   }
 

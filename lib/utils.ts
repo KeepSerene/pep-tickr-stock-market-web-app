@@ -7,7 +7,10 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatTimeAgo(timestamp: number) {
   const now = Date.now();
-  const diffInMs = now - timestamp * 1000; // Convert to milliseconds
+  const diffInMs = now - timestamp * 1000;
+
+  if (diffInMs < 0) return "Just now";
+
   const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
   const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
 
@@ -36,21 +39,29 @@ export function formatMarketCapValue(marketCapInr: number): string {
   return `₹${marketCapInr.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+export const formatISODate = (date: Date, timeZone = "Asia/Kolkata") =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+
 export const getDateRange = (days: number) => {
   const toDate = new Date();
   const fromDate = new Date();
   fromDate.setDate(toDate.getDate() - days);
 
   return {
-    to: toDate.toISOString().split("T")[0],
-    from: fromDate.toISOString().split("T")[0],
+    to: formatISODate(toDate),
+    from: formatISODate(fromDate),
   };
 };
 
 // Get today's date range (from today to today)
 export function getTodayDateRange() {
   const today = new Date();
-  const todayString = today.toISOString().split("T")[0];
+  const todayString = formatISODate(today);
 
   return {
     to: todayString,
@@ -80,7 +91,7 @@ export const validateArticle = (article: RawNewsArticle) =>
   article.headline && article.summary && article.url && article.datetime;
 
 // Get today's date string in YYYY-MM-DD format
-export const getTodayString = () => new Date().toISOString().split("T")[0];
+export const getTodayString = () => formatISODate(new Date());
 
 export const formatArticle = (
   article: RawNewsArticle,
@@ -101,7 +112,7 @@ export const formatArticle = (
 });
 
 export function formatChangePercent(changePercent?: number) {
-  if (!changePercent) return "";
+  if (changePercent === undefined || changePercent === null) return "";
 
   const sign = changePercent > 0 ? "+" : "";
 
@@ -121,14 +132,6 @@ export function formatPrice(price: number) {
     minimumFractionDigits: 2,
   }).format(price);
 }
-
-export const formatDateToday = new Date().toLocaleDateString("en-IN", {
-  weekday: "long",
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-  timeZone: "Asia/Kolkata",
-});
 
 export function getAlertText(alert: Alert) {
   const condition = alert.alertType === "upper" ? ">" : "<";

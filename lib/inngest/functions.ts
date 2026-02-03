@@ -4,6 +4,7 @@ import { getNews } from "../actions/finnhub.actions";
 import { sendDailyNewsEmail, sendWelcomeEmail } from "../nodemailer";
 import { inngest } from "./client";
 import {
+  generateFallbackSummary,
   NEWS_SUMMARY_EMAIL_PROMPT,
   PERSONALIZED_WELCOME_EMAIL_PROMPT,
 } from "./prompts";
@@ -70,8 +71,6 @@ export const sendDailyNewsSummary = inngest.createFunction(
 
     // Early exit if no users found
     if (!users || users.length === 0) {
-      console.warn("No users found for sending daily news!");
-
       return {
         success: false,
         error: "No users found for sending daily news!",
@@ -114,7 +113,6 @@ export const sendDailyNewsSummary = inngest.createFunction(
         // If there are no articles for this user, record "skipped" and
         // move straight to the next user — no AI call, no email.
         if (!newsArticles || newsArticles.length === 0) {
-          console.warn(`⚠️ No news available for ${user.email}`);
           results.push({
             userId: user.id,
             email: user.email,
@@ -216,15 +214,3 @@ export const sendDailyNewsSummary = inngest.createFunction(
     };
   },
 );
-
-/**
- * Generate fallback summary if AI fails
- */
-function generateFallbackSummary(articles: MarketNewsArticle[]): string {
-  const topHeadlines = articles
-    .slice(0, 3)
-    .map((a) => `• ${a.headline}`)
-    .join("\n");
-
-  return `Here's your daily market update! Today's top stories include:\n\n${topHeadlines}\n\nCheck PepTickr for full details and stay ahead of the market!`;
-}

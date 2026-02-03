@@ -4,7 +4,7 @@ import { formatArticle, getDateRange, validateArticle } from "@/lib/utils";
 
 // Finnhub API configuration
 const FINNHUB_BASE_URL = "https://finnhub.io/api/v1";
-const FINNHUB_API_KEY = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
+const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY;
 
 /**
  * Generic fetch wrapper with Next.js caching support
@@ -87,6 +87,7 @@ async function fetchCompanyNews(
   }
 
   const allArticles: MarketNewsArticle[] = [];
+  const seenUrls = new Set<string>();
   const maxRounds = 6; // Maximum iterations to prevent infinite loops
   let currentRound = 0;
 
@@ -103,13 +104,12 @@ async function fetchCompanyNews(
 
         // Find the first valid article we haven't used yet
         const validArticle = news.find(
-          (article) =>
-            validateArticle(article) &&
-            !allArticles.some((a) => a.id === article.id), // Prevent duplicates
+          (article) => validateArticle(article) && !seenUrls.has(article.url!),
         );
 
         // Add article if found
         if (validArticle) {
+          seenUrls.add(validArticle.url!);
           const formatted = formatArticle(
             validArticle,
             true, // isCompanyNews = true

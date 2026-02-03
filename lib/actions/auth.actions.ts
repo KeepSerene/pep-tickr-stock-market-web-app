@@ -4,6 +4,12 @@ import { headers } from "next/headers";
 import { auth } from "../better-auth/auth";
 import { inngest } from "../inngest/client";
 
+const PASSWORD_PATTERN =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+
+/**
+ * Server action for user sign up with personalized onboarding
+ */
 export async function signUpAction({
   email,
   fullName,
@@ -14,10 +20,7 @@ export async function signUpAction({
   preferredIndustry,
 }: SignUpFormData) {
   // Server-side validation
-  const passwordPattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
-
-  if (!passwordPattern.test(password)) {
+  if (!PASSWORD_PATTERN.test(password)) {
     return {
       success: false,
       error:
@@ -25,13 +28,24 @@ export async function signUpAction({
     };
   }
 
+  // Validate required fields
+  if (!email || !fullName || !country) {
+    return {
+      success: false,
+      error: "All required fields must be provided",
+    };
+  }
+
   try {
+    // Create user account via Better Auth
     const response = await auth.api.signUpEmail({
       body: { email, password, name: fullName },
     });
 
+    // If signup successful, trigger welcome email workflow
     if (response) {
       try {
+        // Send event to Inngest for async processing
         await inngest.send({
           name: "app/user.created",
           data: {
@@ -44,6 +58,7 @@ export async function signUpAction({
           },
         });
       } catch (eventError) {
+        // Log but don't fail signup if event send fails
         console.error("Inngest send failed:", eventError);
       }
     }
@@ -52,13 +67,26 @@ export async function signUpAction({
   } catch (error) {
     console.error("Sign up action failed:", error);
 
+    if (error instanceof Error) {
+      if (error.message.includes("email")) {
+        return { success: false, error: "Email already exists" };
+      }
+      if (error.message.includes("password")) {
+        return { success: false, error: "Invalid password format" };
+      }
+    }
+
     return { success: false, error: "Sign Up Failed!" };
   }
 }
 
+/**
+ * Server action for user sign out
+ */
 export async function signOutAction() {
   try {
     await auth.api.signOut({ headers: await headers() });
+    return { success: true };
   } catch (error) {
     console.error("Sign out action error:", error);
 
@@ -66,16 +94,22 @@ export async function signOutAction() {
   }
 }
 
+/**
+ * Server action for user sign in
+ */
 export async function signInAction({ email, password }: SignInFormData) {
   // Server-side validation
-  const passwordPattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
-
-  if (!passwordPattern.test(password)) {
+  if (!password) {
     return {
       success: false,
-      error:
-        "Password must contain uppercase, lowercase, number, and special character",
+      error: "Password is required",
+    };
+  }
+
+  if (!email || !email.includes("@")) {
+    return {
+      success: false,
+      error: "Invalid email format",
     };
   }
 
@@ -87,6 +121,15 @@ export async function signInAction({ email, password }: SignInFormData) {
     return { success: true, data: response };
   } catch (error) {
     console.error("Sign in action failed:", error);
+
+    if (error instanceof Error) {
+      if (error.message.includes("credentials")) {
+        return { success: false, error: "Invalid email or password" };
+      }
+      if (error.message.includes("not found")) {
+        return { success: false, error: "Account not found" };
+      }
+    }
 
     return { success: false, error: "Sign In Failed!" };
   }

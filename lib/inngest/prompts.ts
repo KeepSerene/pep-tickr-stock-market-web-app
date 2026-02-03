@@ -198,6 +198,18 @@ Apple Stock Jumped After Great Earnings Report
 </div>
 </div>`;
 
+/**
+ * Generate fallback summary if AI fails
+ */
+export function generateFallbackSummary(articles: MarketNewsArticle[]): string {
+  const topHeadlines = articles
+    .slice(0, 3)
+    .map((a) => `• ${a.headline}`)
+    .join("\n");
+
+  return `Here's your daily market update! Today's top stories include:\n\n${topHeadlines}\n\nCheck PepTickr for full details and stay ahead of the market!`;
+}
+
 export const TRADINGVIEW_SYMBOL_MAPPING_PROMPT = `You are an expert in financial markets and trading platforms. Your task is to find the correct TradingView symbol that corresponds to a given Finnhub stock symbol.
 
 Stock information from Finnhub:

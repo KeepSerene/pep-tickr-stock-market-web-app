@@ -1,12 +1,12 @@
 import { inngest } from "@/lib/inngest/client";
-import { sendSignUpEmail } from "@/lib/inngest/functions";
+import { sendDailyNewsSummary, sendSignUpEmail } from "@/lib/inngest/functions";
 import { serve } from "inngest/next";
 
 // Create an API that serves inngest functions
 // ROUTE: /api/inngest
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [sendSignUpEmail],
+  functions: [sendSignUpEmail, sendDailyNewsSummary],
 });
 
 /*
@@ -25,5 +25,5 @@ export const { GET, POST, PUT } = serve({
    ↓
 7. serve() handlers receive the request
    ↓
-8. sendSignUpEmail() function executes
+8. inngest functions execute
 */

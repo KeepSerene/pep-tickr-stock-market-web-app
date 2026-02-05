@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
 } from "@/components/ui/command";
 import { Button } from "./ui/button";
@@ -41,7 +39,7 @@ export function SearchCommandMenu({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (!isSearchMode) return setStocks(initialStocks);
 
     setIsLoading(true);
@@ -56,13 +54,13 @@ export function SearchCommandMenu({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isSearchMode, initialStocks, searchTerm]);
 
   const debouncedSearch = useDebounce(handleSearch, 300);
 
   useEffect(() => {
     debouncedSearch();
-  }, [searchTerm]);
+  }, [searchTerm, debouncedSearch]);
 
   const handleSelectStock = () => {
     setIsOpen(false);
@@ -73,7 +71,18 @@ export function SearchCommandMenu({
   return (
     <>
       {renderAs === "text" ? (
-        <span onClick={() => setIsOpen(true)} className="search-text">
+        <span
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setIsOpen(true);
+            }
+          }}
+          onClick={() => setIsOpen(true)}
+          className="search-text"
+        >
           {label}
         </span>
       ) : (

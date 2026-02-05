@@ -18,12 +18,12 @@ function NavItems({
   return (
     <ul className="max-sm:text-sm font-medium p-2 flex flex-col sm:flex-row gap-3 sm:gap-10">
       {NAV_ITEMS.map(({ label, href }) => {
-        if (label === "Search") {
+        if (href === "/search") {
           return (
             <li
               key="search-trigger"
-              title="Cmd/Ctrl + K"
-              aria-label="Press Cmd/Ctrl + K to toggle"
+              title="Search stocks (Cmd/Ctrl + K)"
+              aria-label="Press Cmd/Ctrl + K to toggle search command menu"
             >
               <SearchCommandMenu
                 renderAs="text"

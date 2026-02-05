@@ -4,10 +4,10 @@ import { getNews } from "../actions/finnhub.actions";
 import { sendDailyNewsEmail, sendWelcomeEmail } from "../nodemailer";
 import { inngest } from "./client";
 import {
-  generateFallbackSummary,
   NEWS_SUMMARY_EMAIL_PROMPT,
   PERSONALIZED_WELCOME_EMAIL_PROMPT,
 } from "./prompts";
+import { generateFallbackNewsSummary } from "../utils";
 
 export const sendSignUpEmail = inngest.createFunction(
   { id: "sign-up-email" },
@@ -162,7 +162,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
           ?.content?.parts?.at(0);
         const summaryText =
           (summaryPart && "text" in summaryPart ? summaryPart.text : null) ||
-          generateFallbackSummary(newsArticles);
+          generateFallbackNewsSummary(newsArticles);
 
         // ---------------------------------------------------------------
         // STEP 4 — Send the email via Nodemailer.

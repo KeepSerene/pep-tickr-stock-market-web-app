@@ -147,3 +147,17 @@ export const getFormattedTodayDate = () =>
     day: "numeric",
     timeZone: "Asia/Kolkata",
   });
+
+/**
+ * Generate fallback daily news summary if AI fails
+ */
+export function generateFallbackNewsSummary(
+  articles: MarketNewsArticle[],
+): string {
+  const topHeadlines = articles
+    .slice(0, 3)
+    .map((a) => `• ${a.headline}`)
+    .join("\n");
+
+  return `<p class="mobile-text" style="margin:0 0 20px 0;font-size:16px;line-height:1.6;color:#4b5563;">Here's your daily market update! Today's top stories include:\n\n${topHeadlines}\n\nCheck PepTickr for full details and stay ahead of the market!</p>`;
+}

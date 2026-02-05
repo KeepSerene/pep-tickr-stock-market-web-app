@@ -9,7 +9,7 @@ import {
   COMPANY_FINANCIALS_WIDGET_CONFIG,
 } from "@/lib/constants";
 
-async function StockDetailsPage({ params }: StockDetailsPageProps) {
+async function StockDetails({ params }: StockDetailsPageProps) {
   const { symbol } = await params;
   const baseScriptUrl =
     "https://s3.tradingview.com/external-embedding/embed-widget-";
@@ -87,4 +87,4 @@ async function StockDetailsPage({ params }: StockDetailsPageProps) {
   );
 }
 
-export default StockDetailsPage;
+export default StockDetails;

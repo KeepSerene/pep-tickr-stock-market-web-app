@@ -154,9 +154,27 @@ export const getFormattedTodayDate = () =>
 export function generateFallbackNewsSummary(
   articles: MarketNewsArticle[],
 ): string {
+  const escapeHtml = (value: string) =>
+    value.replace(/[&<>"']/g, (char) => {
+      switch (char) {
+        case "&":
+          return "&amp;";
+        case "<":
+          return "&lt;";
+        case ">":
+          return "&gt;";
+        case '"':
+          return "&quot;";
+        case "'":
+          return "&#39;";
+        default:
+          return char;
+      }
+    });
+
   const topHeadlines = articles
     .slice(0, 3)
-    .map((a) => `• ${a.headline}`)
+    .map((a) => `• ${escapeHtml(a.headline)}`)
     .join("\n");
 
   return `<p class="mobile-text" style="margin:0 0 20px 0;font-size:16px;line-height:1.6;color:#4b5563;">Here's your daily market update! Today's top stories include:\n\n${topHeadlines}\n\nCheck PepTickr for full details and stay ahead of the market!</p>`;

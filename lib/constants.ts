@@ -263,7 +263,7 @@ export const COMPANY_FINANCIALS_WIDGET_CONFIG = (symbol: string) => ({
 });
 
 export const POPULAR_STOCK_SYMBOLS = [
-  // Tech Giants
+  // Global Tech Giants
   "AAPL",
   "MSFT",
   "GOOGL",
@@ -275,53 +275,65 @@ export const POPULAR_STOCK_SYMBOLS = [
   "ORCL",
   "CRM",
 
-  // Growing Tech Companies
+  // US Growth / SaaS
   "ADBE",
   "INTC",
   "AMD",
   "PYPL",
-  "UBER",
-  "ZOOM",
-  "SPOT",
   "SQ",
   "SHOP",
   "ROKU",
-
-  // Newer Tech Companies
-  "SNOW",
-  "PLTR",
-  "COIN",
-  "RBLX",
   "DDOG",
   "CRWD",
   "NET",
-  "OKTA",
-  "TWLO",
-  "ZM",
 
-  // Consumer & Delivery Apps
-  "DOCU",
-  "PTON",
-  "PINS",
-  "SNAP",
-  "LYFT",
-  "DASH",
-  "ABNB",
-  "RIVN",
-  "LCID",
-  "NIO",
+  // Indian Tech & IT Services
+  "TCS",
+  "INFY",
+  "WIPRO",
+  "HCLTECH",
+  "TECHM",
+  "LTIM",
+  "COFORGE",
+  "MPHASIS",
+  "LTI",
+  "MINDTREE",
 
-  // International Companies
-  "XPEV",
-  "LI",
-  "BABA",
-  "JD",
-  "PDD",
-  "TME",
-  "BILI",
-  "DIDI",
-  "GRAB",
-  "SE",
+  // Indian Financials & Large Caps
+  "RELIANCE",
+  "HDFCBANK",
+  "ICICIBANK",
+  "SBIN",
+  "HDFC",
+  "KOTAKBANK",
+  "AXISBANK",
+  "BAJFINANCE",
+  "ITC",
+  "TATASTEEL",
+
+  // Indian Consumer, Auto & Pharma
+  "TITAN",
+  "MARUTI",
+  "BAJAJ-AUTO",
+  "SUNPHARMA",
+  "DIVISLAB",
+  "DRREDDY",
+  "HINDUNILVR",
+  "ASIANPAINT",
+  "ULTRACEMCO",
+  "JSWSTEEL",
+
+  // Indian digital / newer large caps & infra
+  "ZOMATO",
+  "PAYTM",
+  "ADANIENT",
+  "ADANIPORTS",
+  "BHARTIARTL",
+  "GRASIM",
+  "POWERGRID",
+  "ONGC",
+  "NTPC",
+  "JSWENERGY",
 ];
 
 export const NO_MARKET_NEWS =

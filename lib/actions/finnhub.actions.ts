@@ -1,6 +1,8 @@
 "use server";
 
 import { formatArticle, getDateRange, validateArticle } from "@/lib/utils";
+import { cache } from "react";
+import { POPULAR_STOCK_SYMBOLS } from "../constants";
 
 // Finnhub API configuration
 const FINNHUB_BASE_URL = "https://finnhub.io/api/v1";
@@ -192,41 +194,87 @@ async function fetchGeneralMarketNews(
 }
 
 /**
- * Search for stocks by query string
- * @param query - Search query (e.g., "Apple", "AAPL")
- * @returns Array of matching stocks
+ * Search for stocks by query or fetch popular stocks if query is empty.
+ * This function handles data normalization and caching for a seamless UI experience.
+ * @param query - The search term (e.g., "AAPL", "Reliance")
+ * @returns A list of stocks formatted with watchlist status
  */
-export async function searchStocks(
-  query: string,
-): Promise<FinnhubSearchResult[]> {
-  try {
-    if (!FINNHUB_API_KEY) {
-      throw new Error("FINNHUB_API_KEY is not configured");
-    }
+export const searchStocks = cache(
+  async (query?: string): Promise<StockWithWatchlistStatus[]> => {
+    try {
+      // Validate API Key existence before proceeding
+      if (!FINNHUB_API_KEY) {
+        throw new Error(
+          "FINNHUB_API_KEY is missing from environment variables.",
+        );
+      }
 
-    if (!query || query.trim().length < 1) {
+      let searchResults: FinnhubSearchResult[] = [];
+
+      // CASE 1: No query provided - Fetch "Popular" stock profiles as a fallback
+      if (!query || query.trim().length === 0) {
+        const topSymbols = POPULAR_STOCK_SYMBOLS.slice(0, 10);
+
+        // Fetch profiles in parallel
+        const profilePromises = topSymbols.map(async (symbol) => {
+          try {
+            const url = `${FINNHUB_BASE_URL}/stock/profile2?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
+            // Profile data is relatively static, so we cache for 1 hour (3600s)
+            const profile = await fetchJSON<
+              ProfileData & { exchange?: string }
+            >(url, 3600);
+
+            if (!profile || !profile.name) return null;
+
+            return {
+              symbol: symbol,
+              description: profile.name,
+              displaySymbol: symbol,
+              type: "Common Stock",
+              // Preference: Profile exchange -> India -> US
+              exchange: profile.exchange || "India",
+            } as FinnhubSearchResult;
+          } catch {
+            return null; // Skip symbols that fail to fetch
+          }
+        });
+
+        const profiles = await Promise.all(profilePromises);
+        searchResults = profiles.filter(
+          (p): p is FinnhubSearchResult => p !== null,
+        );
+      }
+
+      // CASE 2: Query provided - Search the Finnhub directory
+      else {
+        const cleanQuery = query.trim();
+        const url = `${FINNHUB_BASE_URL}/search?q=${encodeURIComponent(cleanQuery)}&token=${FINNHUB_API_KEY}`;
+
+        // Search results are dynamic, so we cache for 30 minutes (1800s)
+        const data = await fetchJSON<FinnhubSearchResponse>(url, 1800);
+        searchResults = data.result || [];
+      }
+
+      // Step 3: Map and Normalize results to StockWithWatchlistStatus
+      return searchResults.slice(0, 15).map((result) => {
+        return {
+          symbol: result.symbol.toUpperCase(),
+          name: result.description || "Unknown Company",
+          // Logic: Use displaySymbol to check for Indian markets or default to India/US
+          exchange: result.displaySymbol?.includes(".")
+            ? "India"
+            : result.exchange || "US",
+          type: result.type || "Stock",
+          isInWatchlist: false,
+        };
+      });
+    } catch (error) {
+      console.error("❌ Error in searchStocks action:", error);
+
       return [];
     }
-
-    const cleanQuery = query.trim();
-    const url = `${FINNHUB_BASE_URL}/search?q=${encodeURIComponent(cleanQuery)}&token=${FINNHUB_API_KEY}`;
-
-    const response = await fetchJSON<FinnhubSearchResponse>(url);
-
-    // Return only US stocks and common stock types
-    return (
-      response.result?.filter(
-        (stock) =>
-          stock.type === "Common Stock" ||
-          stock.type === "ETP" ||
-          stock.type === "ETF",
-      ) || []
-    );
-  } catch (error) {
-    console.error("Error searching stocks:", error);
-    return [];
-  }
-}
+  },
+);
 
 /**
  * Fetch stock quote data (current price, change, etc.)

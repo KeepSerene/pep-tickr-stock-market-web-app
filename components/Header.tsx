@@ -2,21 +2,26 @@ import Link from "next/link";
 import Logo from "./Logo";
 import NavItems from "./NavItems";
 import UserMenuDropdown from "./UserMenuDropdown";
+import { searchStocks } from "@/lib/actions/finnhub.actions";
 
-const Header = ({ user }: { user: User }) => (
-  <header className="header sticky top-0">
-    <div className="container header-wrapper">
-      <Link href="/">
-        <Logo className="w-auto h-8" />
-      </Link>
+async function Header({ user }: { user: User }) {
+  const initialStocks = await searchStocks();
 
-      <nav className="hidden sm:block">
-        <NavItems />
-      </nav>
+  return (
+    <header className="header sticky top-0">
+      <div className="container header-wrapper">
+        <Link href="/">
+          <Logo className="w-auto h-8" />
+        </Link>
 
-      <UserMenuDropdown user={user} />
-    </div>
-  </header>
-);
+        <nav className="hidden sm:block">
+          <NavItems initialStocks={initialStocks} />
+        </nav>
+
+        <UserMenuDropdown user={user} initialStocks={initialStocks} />
+      </div>
+    </header>
+  );
+}
 
 export default Header;

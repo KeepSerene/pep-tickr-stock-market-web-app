@@ -56,8 +56,8 @@ declare global {
     href: string;
   };
 
-  type SearchCommandProps = {
-    renderAs?: "button" | "text";
+  type SearchCommandMenuProps = {
+    renderAs?: "btn" | "text";
     label?: string;
     initialStocks: StockWithWatchlistStatus[];
   };
@@ -90,6 +90,7 @@ declare global {
     description: string;
     displaySymbol?: string;
     type: string;
+    exchange?: string;
   };
 
   type FinnhubSearchResponse = {
@@ -167,15 +168,6 @@ declare global {
 
   type WatchlistNewsProps = {
     news?: MarketNewsArticle[];
-  };
-
-  type SearchCommandProps = {
-    open?: boolean;
-    setOpen?: (open: boolean) => void;
-    renderAs?: "button" | "text";
-    buttonLabel?: string;
-    buttonVariant?: "primary" | "secondary";
-    className?: string;
   };
 
   type AlertData = {
